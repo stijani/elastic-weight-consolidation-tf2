@@ -7,11 +7,11 @@ Below are plots from the sample usage code in the `demo` notebook.
 
 <br>
 
-![GitHub](https://github.com/King-Of-Knights/overcoming-catastrophic/blob/master/result.png)
+![GitHub](https://github.com/stijani/elastic-weight-consolidation-tf2/blob/main/images/bars.png)
 
 <br>
 
-![GitHub](https://github.com/King-Of-Knights/overcoming-catastrophic/blob/master/result.png)
+![GitHub](https://github.com/stijani/elastic-weight-consolidation-tf2/blob/main/images/lines.png)
 
 <br>
 
