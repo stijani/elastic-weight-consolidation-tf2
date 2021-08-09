@@ -100,12 +100,6 @@ class EWC:
     
     def get_fisher(self):
         return self.fisher_matrix
-    
-    def loss_penalty(self, current_weights):
-        ewc_loss = 0.
-        for u, v, w in zip(current_weights, self.prior_weights, self.fisher_matrix):
-            ewc_loss += self.lambda_ * tf.reduce_sum(w * tf.math.square(u - v))
-        return ewc_loss
          
 
 class MLP3:
