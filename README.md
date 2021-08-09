@@ -5,7 +5,9 @@ The available repositories have implemented this technique in tf1, keras and pyt
 
 Below are plots from the sample usage code in the `demo` notebook.
 
+
 ![GitHub](https://github.com/King-Of-Knights/overcoming-catastrophic/blob/master/result.png)
+
 ![GitHub](https://github.com/King-Of-Knights/overcoming-catastrophic/blob/master/result.png)
 
 Please reach out if you do find any issues in the implementation logic, code or have an advice to make things better.
