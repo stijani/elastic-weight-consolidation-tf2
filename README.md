@@ -3,7 +3,7 @@ During or after learning new skills, humans are able to retain most of the skill
 
 The available repositories have implemented this technique in tf1, keras and pytorch. Here, I implemented it using tensorflow 2 (tf2) with custom training flow using the GradientTape and enger execution.
 
-Below are plots from the appended `demo` notebook illustrating how to use this code.
+Below are plots from the appended `demo` notebook illustrating how to use this code - the example used the MNIST data set and its permuted version.
 
 <br>
 
