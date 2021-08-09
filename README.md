@@ -7,11 +7,11 @@ Below are plots from the sample usage code in the `demo` notebook.
 
 <br>
 
-<img src=https://github.com/stijani/elastic-weight-consolidation-tf2/blob/main/images/bars.png width=400 height=500 />
+<img src=https://github.com/stijani/elastic-weight-consolidation-tf2/blob/main/images/bars.png width=500 height=400 />
 
 <br>
 
-<img src=https://github.com/stijani/elastic-weight-consolidation-tf2/blob/main/images/lines.png width=400 height=500 />
+<img src=https://github.com/stijani/elastic-weight-consolidation-tf2/blob/main/images/lines.png width=500 height=400 />
 
 <br>
 
