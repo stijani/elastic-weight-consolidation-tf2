@@ -30,55 +30,47 @@ def permute_task(train, test):
 
 class Train:
     
-    def __init__(self, optimizer, loss_fn):
+    def __init__(self, optimizer, loss_fn, prior_weights=None, lambda_=0.1):
         self.optimizer = optimizer
         self.loss_fn = loss_fn
+        self.prior_weights = prior_weights
+        self.lambda_ = lambda_
         
-    def train_sgd(self, model, epochs, train_task, test_task_A, test_task_B=None):
-        test_acc_A, test_acc_B = [], []
+    def train(self, model, epochs, train_task, fisher_matrix=None, test_tasks=None):
+        # empty list to collect per epoch test acc of each task
+        if test_tasks:
+            test_acc = [[] for _ in test_tasks]
+        else: 
+            test_acc = None
         for epoch in tqdm(range(epochs)):
             for batch in train_task:
                 X, y = batch
                 with tf.GradientTape() as tape:
                     pred = model(X)
                     loss = self.loss_fn(y, pred)
+                    # if to execute training with EWC
+                    if fisher_matrix is not None:
+                        loss += self.compute_penalty_loss(model, fisher_matrix)
                 grads = tape.gradient(loss, model.trainable_variables)
                 self.optimizer.apply_gradients(zip(grads, model.trainable_variables))
-            test_acc_A.append(evaluate(model, test_task_A[0], test_task_A[1]))
-            if test_task_B:
-                test_acc_B.append(evaluate(model, test_task_B[0], test_task_B[1]))
-        return test_acc_A, test_acc_B
+            # evaluate with the test set of task after each epoch
+            if test_acc:
+                for i in range(len(test_tasks)):
+                    test_acc[i].append(evaluate(model, test_tasks[i][0], test_tasks[i][1]))
+        return test_acc
 
-    def train_ewc(self, model, prior_weights, lambda_, fisher_matrix, epochs, train_task, test_task_A, test_task_B=None):
-        test_acc_A, test_acc_B = [], []
-        for epoch in tqdm(range(epochs)):
-            for batch in train_task:
-                X, y = batch
-                with tf.GradientTape() as tape:
-                    pred = model(X)
-                    loss = self.loss_fn(y, pred)
-                    total_loss = loss + self.compute_penalty_loss(model, prior_weights, fisher_matrix, lambda_)
-                grads = tape.gradient(total_loss, model.trainable_variables)
-                self.optimizer.apply_gradients(zip(grads, model.trainable_variables))
-            test_acc_A.append(evaluate(model, test_task_A[0], test_task_A[1]))
-            if test_task_B:
-                test_acc_B.append(evaluate(model, test_task_B[0], test_task_B[1]))
-        return test_acc_A, test_acc_B
-
-    
-    def compute_penalty_loss(self, model, prior_weights, fisher_matrix, lambda_):
+    def compute_penalty_loss(self, model, fisher_matrix):
         penalty = 0.
-        for u, v, w in zip(fisher_matrix, model.weights, prior_weights):
+        for u, v, w in zip(fisher_matrix, model.weights, self.prior_weights):
             penalty += tf.math.reduce_sum(u * tf.math.square(v - w))
-        return 0.5 * lambda_ * penalty
+        return 0.5 * self.lambda_ * penalty
     
 
 class EWC:
     
-    def __init__(self, prior_model, data_samples, lambda_, num_sample=30):
+    def __init__(self, prior_model, data_samples, num_sample=30):
         self.prior_model = prior_model
         self.prior_weights = prior_model.weights
-        self.lambda_ = lambda_
         self.num_sample = num_sample
         self.data_samples = data_samples
         self.fisher_matrix = self.compute_fisher()
@@ -100,7 +92,7 @@ class EWC:
     
     def get_fisher(self):
         return self.fisher_matrix
-         
+    
 
 class MLP3:
     
@@ -126,5 +118,3 @@ class MLP3:
         compiled_model = self.model
         compiled_model.compile(optimizer, loss_fn, metrics)
         return compiled_model
-
-    
